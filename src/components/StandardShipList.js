@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutAnimation, SafeAreaView, StyleSheet, View, Text, RefreshControl, StatusBar } from 'react-native';
-import {
-    SwipeableFlatList,
-    SwipeableQuickActionButton,
-    SwipeableQuickActions,
-} from 'react-native-swipe-list';
+import { FlatList, SafeAreaView, StyleSheet, View, Text, RefreshControl, StatusBar, TouchableOpacity } from 'react-native';
 import { Button, Tooltip } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/Ionicons';
 import coordinationAPI from '../api/coordinationAPI';
@@ -234,7 +229,7 @@ export default function List({ navigation }) {
                 />
             </View>
             <SearchBar
-                placeholder="Tìm kiếm đơn hàng theo số điện thoại..."
+                placeholder="Nhập số điện thoại người nhận..."
                 onChangeText={updateSearch}
                 value={search}
                 lightTheme
@@ -242,98 +237,111 @@ export default function List({ navigation }) {
                 containerStyle={{ backgroundColor: '#F9F7F7', height: 48 }}
                 inputContainerStyle={{ backgroundColor: '#DBE2EF', height: 24 }}
             />
-            <SwipeableFlatList
-                data={dataSearch}
-                renderItem={({ item }) =>
-                    <View
-                        style={{
-                            width: '100%',
-                            backgroundColor: '#F9F7F7',
-                            borderColor: '#3F72AF',
-                            borderWidth: 1,
-                            marginBottom: 10,
-                            padding: 10
-                        }}
-                    >
-                        <Text style={{ fontSize: 20, fontWeight: "bold", color: '#112D4E' }}>ĐH{item.DeliveryId}/{item.ShipType === "Giao hàng nhanh" ? "GHN" : "GHTC"}</Text>
-                        <Text>Thông tin người nhận</Text>
-                        <Text style={{ fontSize: 16, color: '#3F72AF' }}>Họ tên: {item.RecieverName}</Text>
-                        <Text style={{ fontSize: 16, color: '#3F72AF' }}>Địa chỉ: {item.AddressDetail}, {item.WardNameStore}, {item.DistrictNameStore}, {item.ProvinceNameStore}</Text>
-                        <Text style={{ fontSize: 16, color: '#3F72AF' }}>Số điện thoại: {item.RecieverPhone}</Text>
-                        <Text>Thông tin người gửi</Text>
-                        <Text style={{ fontSize: 16, color: '#3F72AF' }}>Tên cửa hàng: {item.StoreName}</Text>
-                        <Text style={{ fontSize: 16, color: '#3F72AF' }}>Địa chỉ: {item.StoreAddress}, {item.WardName}, {item.DistrictName}, {item.ProvinceName}</Text>
-                        <Text style={{ fontSize: 16, color: '#3F72AF' }}>Số điện thoại: {item.StorePhone}</Text>
-                        <Text>Thông tin đơn hàng</Text>
-                        <Text style={{ fontSize: 16, color: '#3F72AF' }}>COD: {numberWithCommas(item.COD)}đ</Text>
-                        <Tooltip
-                            popover={<Text style={{ fontSize: 16, color: '#F9F7F7' }}>{formatRelative(addHours(new Date(item.OrderDate), -7), new Date(), { locale: vi })}</Text>}
-                            width={300}
-                            backgroundColor='#3F72AF'
+            <View style={{ alignItems: 'center', width: '100%', }}>
+                <FlatList
+                    data={dataSearch}
+                    renderItem={({ item }) =>
+                        <View
+                            style={{
+                                width: '94%',
+                                backgroundColor: 'white',
+                                borderRadius: 15,
+                                marginBottom: 10,
+                                paddingHorizontal: 20,
+                                alignSelf: 'center'
+                            }}
                         >
-                            <Text style={{ fontSize: 16, color: '#3F72AF' }}>Ngày đặt hàng: {formatDistance(addHours(new Date(item.OrderDate), -7), new Date(), { locale: vi })} trước</Text>
-                        </Tooltip>
-                        <Tooltip
-                            popover={<Text style={{ fontSize: 16, color: '#F9F7F7' }}>{formatRelative(addHours(new Date(item.OrderDate), -7), new Date(), { locale: vi })}</Text>}
-                            width={300}
-                            backgroundColor='#3F72AF'
-                        >
-                            <Text style={{ fontSize: 16, paddingBottom: 10 }}>Ngày tiếp nhận: {formatDistance(addHours(new Date(item.DeliveryDate ? item.DeliveryDate : item.DeliveryDate2), -7), new Date(), { locale: vi })} trước</Text>
-                        </Tooltip>
-                        <Text style={{ fontSize: 16, color: '#3F72AF', paddingBottom: 10 }}>Trạng thái đơn hàng: {statusWithCommas(item.StatusDetail)}</Text>
-                        {item.StatusDetail === 'Da tiep nhan' ?
+                            <View style={{ paddingVertical: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <Text style={{ color: 'gray', fontSize: 16 }}>{item.ShipType === "Giao hàng nhanh" ? "GHN" : "GHTC"} - ĐH{item.DeliveryId}</Text>
+                                <View style={{
+                                    backgroundColor: "green",
+                                    borderRadius: 15, paddingHorizontal: 10, paddingVertical: 5
+                                }}>
+                                    <Text style={{ color: '#F9F7F7', fontSize: 14 }}>{statusWithCommas(item.StatusDetail)}</Text>
+                                </View>
+                            </View>
+                            <Text style={{ color: '#3F72AF' }}>Người gửi</Text>
+                            <Text style={{ fontSize: 18, fontWeight: "bold", color: '#112D4E' }}>{item.StoreName} | {item.StorePhone}</Text>
+                            <View style={{ paddingVertical: 6, flexDirection: 'row', alignItems: 'center' }}>
+                                <Icon name="golf" size={20} color='#D98C00' />
+                                <Text style={{ fontSize: 14, color: 'gray', paddingLeft: 10 }}>{item.StoreAddress}, {item.WardNameStore}, {item.DistrictNameStore}, {item.ProvinceNameStore}</Text>
+                            </View>
+                            <Text style={{ color: '#3F72AF' }}>Người nhận</Text>
+                            <Text style={{ fontSize: 18, fontWeight: "bold", color: '#112D4E' }}>{item.RecieverName} | {item.RecieverPhone}</Text>
+                            <View style={{ paddingVertical: 6, flexDirection: 'row', alignItems: 'center' }}>
+                                <Icon name="golf" size={20} color='#D98C00' />
+                                <Text style={{ fontSize: 14, color: 'gray', paddingLeft: 10 }}>{item.AddressDetail}, {item.WardName}, {item.DistrictName}, {item.ProvinceName}</Text>
+                            </View>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <Icon name="time" size={20} color='green' />
+                                <Tooltip
+                                    popover={<Text style={{ fontSize: 16, color: '#F9F7F7' }}>{formatRelative(addHours(new Date(item.OrderDate), -7), new Date(), { locale: vi })}</Text>}
+                                    width={300}
+                                    backgroundColor='#3F72AF'
+                                >
+                                    <Text style={{ fontSize: 14, paddingLeft: 10 }}>Ngày đặt hàng: {formatDistance(addHours(new Date(item.OrderDate), -7), new Date(), { locale: vi })} trước</Text>
+                                </Tooltip>
+                            </View>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <Icon name="timer" size={20} color='red' />
+                                <Tooltip
+                                    popover={<Text style={{ fontSize: 16, color: '#F9F7F7' }}>{formatDistance(addHours(new Date(item.DeliveryDate), -7), new Date(), { locale: vi })} trước</Text>}
+                                    width={300}
+                                    backgroundColor='#3F72AF'
+                                >
+                                    <Text style={{ fontSize: 14, paddingLeft: 10 }}>Ngày tiếp nhận: {formatDistance(addHours(new Date(item.OrderDate), -7), new Date(), { locale: vi })} trước</Text>
+                                </Tooltip>
+                            </View>
+                            <View style={{ paddingVertical: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <Text style={{ color: 'gray', fontSize: 16 }}>Thu hộ COD</Text>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text style={{ fontSize: 16, color: '#112D4E', fontWeight: 'bold', paddingRight: 10 }}>{numberWithCommas(parseInt(item.COD))} đ</Text>
+                                    <TouchableOpacity
+                                        onPress={() => navigation.navigate('Detail', {
+                                            deliveryId: item.DeliveryId
+                                        })}
+                                    >
+                                        <Icon name="chevron-forward" size={20} color='#112D4E' />
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            {item.StatusDetail === 'Da tiep nhan' ?
                             <Button title="Xác nhận đang về kho"
                                 onPress={() => hanldeMoveWareHouse(item.DeliveryId)}
-                                buttonStyle={{ backgroundColor: '#112D4E' }}
+                                buttonStyle={{ backgroundColor: '#112D4E', borderRadius: 15, marginBottom: 10 }}
                             />
                             :
                             <View></View>
                         }
-                        {item.StatusDetail === 'Da roi kho' ?
-                            <Button title="Xác nhận đã giao hàng"
-                                onPress={() => hanldeDelivered(item.DeliveryId)}
-                                buttonStyle={{ backgroundColor: '#112D4E' }}
-                            />
-                            :
-                            <View></View>
-                        }
-                    </View>
-                }
-                keyExtractor={item => item.DeliveryId.toString()}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                    />
-                }
-                renderRightActions={({ item }) => (
-                    <SwipeableQuickActions>
-                        <SwipeableQuickActionButton
-                            onPress={() => {
-                                LayoutAnimation.configureNext(
-                                    LayoutAnimation.Presets.easeInEaseOut,
-                                );
-                                // setData(data.filter(value => value.id !== item.id));
-                                // navigation.navigate('Detail', {
-                                //     deliveryId: item.DeliveryId,
-                                // })
-                                Alert.alert('abc');
-                            }}
-                            text="Xem Chi Tiết"
-                            textStyle={{ fontWeight: 'bold', color: '#F9F7F7' }}
-                            style={{ backgroundColor: '#3F72AF', justifyContent: 'center', width: 120, height: '94%', }}
+                            {item.StatusDetail === 'Da roi kho' ?
+                                <Button title="Xác nhận đã giao hàng"
+                                    onPress={() => hanldeDelivered(item.DeliveryId)}
+                                    buttonStyle={{ backgroundColor: '#112D4E', borderRadius: 15, marginBottom: 10 }}
+                                />
+                                :
+                                <View></View>
+                            }
+                        </View>
+                    }
+
+                    keyExtractor={item => item.DeliveryId.toString()}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
                         />
-                    </SwipeableQuickActions>
-                )}
-            />
+                    }
+                />
+            </View>
         </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        height: '87%',
+        height: '84%',
         justifyContent: 'center',
+        backgroundColor: '#E8EAE6',
     },
     select: {
         fontSize: 20,

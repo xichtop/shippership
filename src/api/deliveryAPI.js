@@ -7,7 +7,7 @@ const deliveryApi = {
   },
 
   getById: (deliveryId, token) => {
-    const url = `/deliveries/getbyid/${deliveryId}`;
+    const url = `/deliveries/getbyidshipper/${deliveryId}`;
     return axiosClient.get(url, {
       headers: {
         "Content-type": "Application/json",

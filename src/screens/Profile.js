@@ -5,15 +5,15 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { Switch } from 'react-native-elements';
 export default function Profile() {
 
-    const store = useSelector(state => state.store.store);
+    const shipper = useSelector(state => state.shipper.shipper);
 
     return (
         <View style={{ BackgroundColor: '#F9F7F7' }}>
             <View style={{ flexDirection: 'row', padding: 10, backgroundColor: 'white', alignItems: 'center', paddingHorizontal: 20 }}>
-                <Image style={styles.avatar} source={{ uri: `${store.Picture}` }} />
+                <Image style={styles.avatar} source={{ uri: `${shipper.Picture}` }} />
                 <View style={{ paddingLeft: 20, }}>
-                    <Text style={{ fontSize: 20, fontWeight: 'bold', paddingBottom: 5 }}>{store.StoreName}</Text>
-                    <Text>{store.Email}</Text>
+                    <Text style={{ fontSize: 20, fontWeight: 'bold', paddingBottom: 5 }}>{shipper.FullName}</Text>
+                    <Text>{shipper.Email}</Text>
                 </View>
             </View>
             <View style={styles.account}>
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingHorizontal: 20,
-        height: 75,
+        height: 60,
         alignItems: 'center',
     },
     icon: {

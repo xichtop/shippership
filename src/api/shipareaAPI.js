@@ -15,6 +15,26 @@ const shipareaAPI = {
             }
         });
     },
+
+    removeItem: (item, token) => {
+        const url = `/shiparea/removeitem`;
+        return axiosClient.post(url, item, {
+            headers: {
+                "Content-type": "Application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+    },
+
+    addItem: (item, token) => {
+        const url = `/shiparea/additem`;
+        return axiosClient.post(url, item, {
+            headers: {
+                "Content-type": "Application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+    }
 }
 
 export default shipareaAPI;

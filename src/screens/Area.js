@@ -4,6 +4,7 @@ import { Button } from 'react-native-elements'
 import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
 import { useSelector } from 'react-redux'
 import shipareaAPI from '../api/shipareaAPI'
+import { showMessage } from "react-native-flash-message";
 const tableHead = ['Mã', 'Tên Quận/Huyện', 'Thao Tác',];
 const widthArr = [70, 220, 70];
 const DATA = [
@@ -12,7 +13,7 @@ const DATA = [
     ['123', 'Huyện Diễn Châu', '26-06-1999'],
 ]
 
-export default function Area() {
+export default function Area({ navigation}) {
 
     const staffId = useSelector(state => state.shipper.shipper.StaffId);
 
@@ -20,8 +21,50 @@ export default function Area() {
 
     const [data, setData] = useState(DATA);
 
-    const hanldeRemove = (data) => {
-        console.log(data);
+    const hanldeRemove = (rowData) => {
+        console.log(rowData, token);
+        const fetchRemoveArea = async () => {
+            const item = {
+                StaffId: staffId,
+                DistrictCode: rowData[0]
+            }
+            var result = null;
+            try {
+                result = await shipareaAPI.removeItem(item, token);
+
+            } catch (error) {
+                console.log("Failed to fetch remove item: ", error);
+            }
+
+            if (result.successful === true) {
+                setTimeout(() => {
+                    showMessage({
+                        message: "Wonderfull!!!",
+                        description: "Xóa khu vực thành công",
+                        type: "success",
+                        duration: 3000,
+                        icon: 'auto',
+                        floating: true,
+                    });
+                    const temp = data.filter(item => item[0] !== rowData[0])
+                    setData(temp);
+                }, 2000);
+            } else {
+                setTimeout(() => {
+                    showMessage({
+                        message: "Xóa khu vực thất bại",
+                        description: "Vui lòng thử lại sau",
+                        type: "danger",
+                        duration: 3000,
+                        icon: 'auto',
+                        floating: true,
+                    });
+                    const temp = data.filter(item => item[0] !== rowData[0])
+                    setData(temp);
+                }, 2000);
+            }
+        }
+        fetchRemoveArea();
     }
 
     const element = (data, index) => {
@@ -50,6 +93,22 @@ export default function Area() {
         fetchShipArea();
     }, [])
 
+    const onRefresh = () => {
+        const fetchShipArea = async () => {
+            try {
+                const shipareas = await shipareaAPI.getByStaff(staffId, token);
+                const temp = [];
+                shipareas.forEach((ship) => {
+                    temp.push([ship.DistrictCode, ship.DistrictName, 'xóa'])
+                })
+                setData(temp);
+            } catch (error) {
+                console.log('Failed to fetch list ship area', error);
+            }
+        }
+        fetchShipArea();
+    }
+
     return (
         <View style={styles.container}>
             <Table borderStyle={{ borderColor: 'blue' }}>
@@ -69,8 +128,13 @@ export default function Area() {
                 }
             </Table>
             <Button title="Thêm khu vực"
-                onPress={() => navigation.navigate('AddArea')}
+                onPress={() => navigation.navigate('AddArea', {districtCurrents: data})}
                 buttonStyle={{ backgroundColor: '#112D4E', width: 150, alignSelf: 'center', marginTop: 20 }}
+            />
+
+            <Button title="Refresh"
+                onPress={onRefresh}
+                buttonStyle={{ backgroundColor: 'green', width: 150, alignSelf: 'center', marginTop: 10 }}
             />
         </View>
     )

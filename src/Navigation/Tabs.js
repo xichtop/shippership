@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Button } from 'react-native'
+import { Button } from 'react-native-elements'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { useDispatch } from 'react-redux'
@@ -20,6 +20,7 @@ import DeliveryDetail from '../components/DeliveryDetail'
 import AddArea from '../components/AddArea'
 
 const ListStack = createNativeStackNavigator();
+const NewListStack = createNativeStackNavigator();
 const AreaStack = createNativeStackNavigator();
 
 const config = {
@@ -52,9 +53,33 @@ const ListScreen = () => {
                     close: config,
                 },
             }}>
-            <ListStack.Screen name='ListIndex' component={List} options={{ title: 'Danh Sách Đơn Hàng' }} />
-            <ListStack.Screen name='Detail' component={DeliveryDetail} options={{ title: 'Chi Tiết Đơn Hàng' }} />
+            <ListStack.Screen name='ListIndex' component={List} options={{ title: 'Danh Sách Đơn Giao' }} />
+            <ListStack.Screen name='Detail' component={DeliveryDetail} options={{ title: 'Chi Tiết Đơn Giao' }} />
         </ListStack.Navigator>
+    )
+}
+
+const NewListScreen = () => {
+    return (
+        <NewListStack.Navigator
+            screenOptions={{
+                headerStyle: {
+                    backgroundColor: '#112D4E',
+                },
+                headerTintColor: '#F9F7F7',
+                headerTitleStyle: {
+                    fontWeight: 'bold',
+                },
+
+                //animations 
+                transitionSpec: {
+                    open: config,
+                    close: config,
+                },
+            }}>
+            <NewListStack.Screen name='NewListIndex' component={NewList} options={{ title: 'Danh Sách Đơn Hàng' }} />
+            <NewListStack.Screen name='Detail' component={DeliveryDetail} options={{ title: 'Chi Tiết Đơn Hàng' }} />
+        </NewListStack.Navigator>
     )
 }
 
@@ -151,7 +176,7 @@ const Tabs = ({navigation}) => {
                 },
             })}
         >
-            <Tab.Screen name='Index' component={NewList} options={{ tabBarLabel: 'Đơn Hàng Mới', title: 'Đơn Hàng Mới' }} />
+            <Tab.Screen name='Index' component={NewListScreen} options={{ tabBarLabel: 'Đơn Hàng Mới', headerShown: false }} />
             <Tab.Screen name='List' component={ListScreen} options={{ tabBarLabel: 'Đơn Giao', headerShown: false }} />
             <Tab.Screen name='Area' component={AreaScreen} options={{ tabBarLabel: 'Khu Vực', headerShown: false }} />
             <Tab.Screen name='Money' component={Money} options={{ tabBarLabel: 'Dòng Tiền', title: 'Dòng Tiền' }} />
@@ -161,7 +186,8 @@ const Tabs = ({navigation}) => {
                     <Button
                         onPress={handleLogout}
                         title="Đăng xuất"
-                        color="#F9F7F7"
+                        titleStyle={{color: "#F9F7F7"}}
+                        type = 'clear'
                     />
                 ),
             }} />
