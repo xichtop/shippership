@@ -54,7 +54,7 @@ export default function Login({ navigation }) {
                     setIsLoading(false);
                     showMessage({
                         message: "Đăng nhập thất bại!!!",
-                        description: "Vui lòng kiểm tra lại tài khoản hoặc mật khẩu",
+                        description: `${result.message}`,
                         type: "danger",
                         duration: 2500,
                         icon: 'auto',

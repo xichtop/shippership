@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, Alert } from 'react-native'
 import { Button } from 'react-native-elements'
 import shipareaAPI from '../api/shipareaAPI';
 import districtAPI from '../api/districtAPI';
@@ -106,7 +106,11 @@ export default function AddArea({ route, navigation }) {
                 }, 2000);
             }
         }
-        fetchAddShipArea();
+        if (dataTable.length === 0) {
+            Alert.alert('Vui lòng chọn khu vực')
+        } else {
+            fetchAddShipArea();
+        }
     }
 
     return (

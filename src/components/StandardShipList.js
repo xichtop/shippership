@@ -97,7 +97,7 @@ export default function List({ navigation }) {
                     setData(deliveries);
                     setDataSearch(deliveries);
                 } catch (error) {
-                    console.log("Failed to fetch standaed deliver list: ", error);
+                    console.log("Failed to fetch standard deliver list: ", error);
                 }
             }
             fetchListDeleiveries();
@@ -210,7 +210,7 @@ export default function List({ navigation }) {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="#6a51ae" />
-            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginVertical: 10 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBotom: 5, marginTop: 100 }}>
                 <Button
                     icon={<Icon name="rocket" size={15} color={colors[0].color} />}
                     title="Lấy Hàng"
@@ -289,7 +289,7 @@ export default function List({ navigation }) {
                                     width={300}
                                     backgroundColor='#3F72AF'
                                 >
-                                    <Text style={{ fontSize: 14, paddingLeft: 10 }}>Ngày tiếp nhận: {formatDistance(addHours(new Date(item.OrderDate), -7), new Date(), { locale: vi })} trước</Text>
+                                    <Text style={{ fontSize: 14, paddingLeft: 10 }}>Ngày tiếp nhận: {formatDistance(addHours(new Date(item.DeliveryDate), -7), new Date(), { locale: vi })} trước</Text>
                                 </Tooltip>
                             </View>
                             <View style={{ paddingVertical: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -339,7 +339,7 @@ export default function List({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        height: '84%',
+        height: '80%',
         justifyContent: 'center',
         backgroundColor: '#E8EAE6',
     },
