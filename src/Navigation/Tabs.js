@@ -11,7 +11,7 @@ import Profile from '../screens/Profile'
 import List from '../screens/List'
 import Area from '../screens/Area'
 import NewList from '../screens/NewList'
-// import Post from '../screens/Post'
+import FeeShip from '../screens/FeeShip'
 import Login from '../components/Login'
 import Register from '../components/Register'
 import Bank from '../components/Bank'
@@ -145,6 +145,10 @@ const Tabs = ({navigation}) => {
                         iconName = focused ? 'compass' : 'compass-outline';
                         size = 25
                     }
+                    else if (route.name === 'Fee') {
+                        iconName = focused ? 'cash' : 'cash-outline';
+                        size = 25
+                    }
                     else if (route.name === 'Profile') {
                         iconName = focused ? 'person' : 'person-outline';
                         size = 25
@@ -179,6 +183,7 @@ const Tabs = ({navigation}) => {
             <Tab.Screen name='Index' component={NewListScreen} options={{ tabBarLabel: 'Đơn Hàng Mới', headerShown: false }} />
             <Tab.Screen name='List' component={ListScreen} options={{ tabBarLabel: 'Đơn Giao', headerShown: false }} />
             <Tab.Screen name='Area' component={AreaScreen} options={{ tabBarLabel: 'Khu Vực', headerShown: false }} />
+            <Tab.Screen name='Fee' component={FeeShip} options={{ tabBarLabel: 'Phí GH', title: 'Phí Giao Hàng' }} />
             <Tab.Screen name='Money' component={Money} options={{ tabBarLabel: 'Dòng Tiền', title: 'Dòng Tiền' }} />
             <Tab.Screen name='Profile' component={Profile} options={{
                 tabBarLabel: 'Tài Khoản', title: 'Tài Khoản',

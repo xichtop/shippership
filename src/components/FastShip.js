@@ -78,6 +78,7 @@ export default function FastShip({ navigation }) {
                         icon: 'auto',
                         floating: true,
                     });
+                    onRefresh();
                     navigation.navigate('List');
                 }, 2000);
             } else {
@@ -90,7 +91,8 @@ export default function FastShip({ navigation }) {
                         icon: 'auto',
                         floating: true,
                     });
-                    navigation.navigate('List');
+                    // navigation.navigate('List');
+                    onRefresh();
                 }, 2000);
             }
         }

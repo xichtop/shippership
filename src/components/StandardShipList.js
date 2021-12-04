@@ -11,6 +11,8 @@ import statusWithCommas from '../utils/statusWithCommas'
 import { showMessage } from "react-native-flash-message";
 import { SearchBar } from 'react-native-elements';
 
+import ModalReturn from './ModalReturn';
+
 export default function List({ navigation }) {
 
     const token = useSelector(state => state.shipper.token);
@@ -24,6 +26,8 @@ export default function List({ navigation }) {
     const [refreshing, setRefreshing] = useState(false);
 
     const [search, setSearch] = useState('');
+
+    const [modalVisiable, setModalVisiable] = useState(false);
 
     const updateSearch = (search) => {
         setSearch(search);
@@ -306,20 +310,29 @@ export default function List({ navigation }) {
                                 </View>
                             </View>
                             {item.StatusDetail === 'Da tiep nhan' ?
-                            <Button title="Xác nhận đang về kho"
-                                onPress={() => hanldeMoveWareHouse(item.DeliveryId)}
-                                buttonStyle={{ backgroundColor: '#112D4E', borderRadius: 15, marginBottom: 10 }}
-                            />
-                            :
-                            <View></View>
-                        }
-                            {item.StatusDetail === 'Da roi kho' ?
-                                <Button title="Xác nhận đã giao hàng"
-                                    onPress={() => hanldeDelivered(item.DeliveryId)}
+                                <Button title="Xác nhận đang về kho"
+                                    onPress={() => hanldeMoveWareHouse(item.DeliveryId)}
                                     buttonStyle={{ backgroundColor: '#112D4E', borderRadius: 15, marginBottom: 10 }}
                                 />
                                 :
                                 <View></View>
+                            }
+                            {item.StatusDetail === 'Da roi kho' && colors[0].type !== 'solid' ?
+                                <View style={{ flexDirection: 'row', marginLeft: -15 }}>
+                                    <Button title="Xác nhận đã giao hàng"
+                                        onPress={() => hanldeDelivered(item.DeliveryId)}
+                                        buttonStyle={{ backgroundColor: '#112D4E', borderRadius: 15, marginBottom: 10, marginRight: 5 }}
+                                    />
+                                    <Button title="Không nhận hàng"
+                                        onPress={() => setModalVisiable(true)}
+                                        buttonStyle={{ backgroundColor: '#FF4848', borderRadius: 15, marginBottom: 10 }}
+                                    />
+                                    <ModalReturn visible={modalVisiable} setVisible={setModalVisiable} deliveryId={item.DeliveryId} onRefresh={onRefresh} Type='Standard' />
+
+                                </View>
+                                :
+                                <View>
+                                </View>
                             }
                         </View>
                     }
@@ -339,7 +352,7 @@ export default function List({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        height: '80%',
+        height: '75%',
         justifyContent: 'center',
         backgroundColor: '#E8EAE6',
     },

@@ -23,6 +23,7 @@ export default function List({ navigation }) {
     const [colors, setColors] = useState([
         { type: 'solid', color: '#F9F7F7' },
         { type: 'outline', color: '#3F72AF' },
+        { type: 'outline', color: '#3F72AF' },
     ]);
 
     useEffect(() => {
@@ -50,6 +51,7 @@ export default function List({ navigation }) {
         setColors([
             { type: 'solid', color: '#F9F7F7' },
             { type: 'outline', color: '#3F72AF' },
+            { type: 'outline', color: '#3F72AF' },
         ])
     }
     const handleDeliver = () => {
@@ -63,6 +65,24 @@ export default function List({ navigation }) {
         }
         fetchListDeleiveries();
         setColors([
+            { type: 'outline', color: '#3F72AF' },
+            { type: 'solid', color: '#F9F7F7' },
+            { type: 'outline', color: '#3F72AF' },
+        ])
+    }
+
+    const handleBack = () => {
+        const fetchListDeleiveries = async () => {
+            try {
+                const deliveries = await deliveryAPI.getStandardShipBack(staffId, token);
+                setData(deliveries);
+            } catch (error) {
+                console.log("Failed to fetch provinces list: ", error);
+            }
+        }
+        fetchListDeleiveries();
+        setColors([
+            { type: 'outline', color: '#3F72AF' },
             { type: 'outline', color: '#3F72AF' },
             { type: 'solid', color: '#F9F7F7' },
         ])
@@ -126,6 +146,7 @@ export default function List({ navigation }) {
                         icon: 'auto',
                         floating: true,
                     });
+                    onRefresh();
                     navigation.navigate('List');
                 }, 2000);
             } else {
@@ -138,7 +159,8 @@ export default function List({ navigation }) {
                         icon: 'auto',
                         floating: true,
                     });
-                    navigation.navigate('List');
+                    // navigation.navigate('List');
+                    onRefresh();
                 }, 2000);
             }
         }
@@ -155,7 +177,7 @@ export default function List({ navigation }) {
                     type={colors[0].type}
                     titleStyle={{ paddingLeft: 5, fontSize: 16, color: `${colors[0].color}` }}
                     onPress={handleOrdered}
-                    buttonStyle={{ width: 160 }}
+                    buttonStyle={{ width: 110 }}
                 />
                 <Button
                     icon={<Icon name="car-sport" size={15} color={colors[1].color} />}
@@ -163,7 +185,15 @@ export default function List({ navigation }) {
                     type={colors[1].type}
                     titleStyle={{ paddingLeft: 5, fontSize: 16, color: `${colors[1].color}` }}
                     onPress={handleDeliver}
-                    buttonStyle={{ width: 160 }}
+                    buttonStyle={{ width: 110 }}
+                />
+                <Button
+                    icon={<Icon name="play-back-circle" size={15} color={colors[2].color} />}
+                    title="Trả Hàng"
+                    type={colors[2].type}
+                    titleStyle={{ paddingLeft: 5, fontSize: 16, color: `${colors[2].color}` }}
+                    onPress={handleBack}
+                    buttonStyle={{ width: 110 }}
                 />
             </View>
             <View style={{ alignItems: 'center', width: '100%' }}>
@@ -242,8 +272,8 @@ export default function List({ navigation }) {
                             <Text>Hiện không có đơn hàng nào mới</Text>
                             <Text style={{ paddingVertical: 10 }}>trong khu vực của bạn</Text>
                             <Button title="Xem khu vực"
-                                onPress={() => navigation.navigate('Area')} 
-                                buttonStyle={{ backgroundColor: '#112D4E', borderRadius: 15, marginBottom: 10 }}/>
+                                onPress={() => navigation.navigate('Area')}
+                                buttonStyle={{ backgroundColor: '#112D4E', borderRadius: 15, marginBottom: 10 }} />
                         </View>
                     }
                 />
@@ -254,7 +284,7 @@ export default function List({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        height: '92%',
+        height: '83%',
         justifyContent: 'center',
         backgroundColor: '#E8EAE6',
     },

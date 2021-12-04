@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { FlatList, SafeAreaView, StyleSheet, View, Text, RefreshControl, StatusBar, TouchableOpacity } from 'react-native';
 import { Button, Tooltip } from 'react-native-elements';
 import coordinationAPI from '../api/coordinationAPI';
+import returnAPI from '../api/returnAPI'
 import { showMessage } from "react-native-flash-message";
 import { formatDistance, formatRelative, addHours } from 'date-fns'
 import { vi } from 'date-fns/locale'
@@ -10,7 +11,11 @@ import numberWithCommas from '../utils/numberWithCommas'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { SearchBar } from 'react-native-elements';
 
-export default function FastShip({ navigation }) {
+import statusFast from '../utils/statusFast'
+
+import ModalReturn from './ModalReturn';
+
+export default function FastShipList({ navigation }) {
 
     const token = useSelector(state => state.shipper.token);
 
@@ -23,6 +28,8 @@ export default function FastShip({ navigation }) {
     const [refreshing, setRefreshing] = useState(false);
 
     const [search, setSearch] = useState('');
+
+    const [modalVisiable, setModalVisiable] = useState(false);
 
     const updateSearch = (search) => {
         setSearch(search);
@@ -106,6 +113,48 @@ export default function FastShip({ navigation }) {
         fetchupdateItem();
     }
 
+    const hanldeReturn = (deliveryId) => {
+        const fetchReturn = async () => {
+            var item = {
+                DeliveryId: deliveryId
+            }
+            var result = null;
+            try {
+                result = await returnAPI.returned(item, token);
+
+            } catch (error) {
+                console.log("Failed to fetch add item: ", error);
+            }
+
+            if (result.successful === true) {
+                setTimeout(() => {
+                    showMessage({
+                        message: "Wonderfull!!!",
+                        description: "Xác nhận đã trả hàng thành công",
+                        type: "success",
+                        duration: 3000,
+                        icon: 'auto',
+                        floating: true,
+                    });
+                    onRefresh();
+                }, 2000);
+            } else {
+                setTimeout(() => {
+                    showMessage({
+                        message: "Xác nhận đã trả hàng thất bại",
+                        description: "Vui lòng thử lại sau",
+                        type: "danger",
+                        duration: 3000,
+                        icon: 'auto',
+                        floating: true,
+                    });
+                    onRefresh();
+                }, 2000);
+            }
+        }
+        fetchReturn();
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="#112D4E" />
@@ -115,7 +164,7 @@ export default function FastShip({ navigation }) {
                 value={search}
                 lightTheme
                 keyboardType='phone-pad'
-                containerStyle={{ backgroundColor: '#F9F7F7', height: 48, paddingTop: 40, paddingBottom: 32}}
+                containerStyle={{ backgroundColor: '#F9F7F7', height: 48, paddingTop: 40, paddingBottom: 32 }}
                 inputContainerStyle={{ backgroundColor: '#DBE2EF', height: 24 }}
             />
             <View style={{ alignItems: 'center', width: '100%', }}>
@@ -135,10 +184,10 @@ export default function FastShip({ navigation }) {
                             <View style={{ paddingVertical: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <Text style={{ color: 'gray', fontSize: 16 }}>{item.ShipType === "Giao hàng nhanh" ? "GHN" : "GHTC"} - ĐH{item.DeliveryId}</Text>
                                 <View style={{
-                                    backgroundColor: item.Status === 'Delivering' ? "#1C7947" : "#112D4E",
+                                    backgroundColor: "#1C7947",
                                     borderRadius: 15, paddingHorizontal: 10, paddingVertical: 5
                                 }}>
-                                    <Text style={{ color: '#F9F7F7', fontSize: 14 }}>{item.Status === 'Delivering' ? 'Đang giao hàng' : 'Đã giao hàng'}</Text>
+                                    <Text style={{ color: '#F9F7F7', fontSize: 14 }}>{statusFast(item.Status)}</Text>
                                 </View>
                             </View>
                             <Text style={{ color: '#3F72AF' }}>Người gửi</Text>
@@ -187,9 +236,25 @@ export default function FastShip({ navigation }) {
                                 </View>
                             </View>
                             {item.Status === 'Delivering' ?
-                                <Button title="Xác nhận đã giao hàng"
-                                    onPress={() => hanldeConfirm(item.DeliveryId)}
-                                    buttonStyle={{ backgroundColor: '#112D4E', borderRadius: 15, marginBottom: 10 }}
+                                <View style={{ flexDirection: 'row', marginLeft: -5 }}>
+                                    <Button title="Xác nhận giao hàng"
+                                        onPress={() => hanldeConfirm(item.DeliveryId)}
+                                        buttonStyle={{ backgroundColor: '#112D4E', borderRadius: 15, marginBottom: 10, marginRight: 10 }}
+                                    />
+                                    <Button title="Không nhận hàng"
+                                        onPress={() => setModalVisiable(true)}
+                                        buttonStyle={{ backgroundColor: '#FF4848', borderRadius: 15, marginBottom: 10 }}
+                                    />
+                                    <ModalReturn visible={modalVisiable} setVisible={setModalVisiable} deliveryId={item.DeliveryId} onRefresh={onRefresh} Type='Fast' />
+                                </View>
+                                :
+                                <View></View>
+                            }
+
+                            {item.Status === 'Returning' ?
+                                <Button title="Xác nhận đã trả hàng"
+                                    onPress={() => hanldeReturn(item.DeliveryId)}
+                                    buttonStyle={{ backgroundColor: '#112D4E', borderRadius: 15, marginBottom: 10, marginRight: 10 }}
                                 />
                                 :
                                 <View></View>

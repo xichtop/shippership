@@ -5,6 +5,8 @@ const statusWithCommas = (status) => {
     else if (status === 'Dang roi kho') return 'Đang rời kho'
     else if (status === 'Da roi kho') return 'Đã rời kho'
     else if (status === 'Da giao hang') return 'Đã giao hàng'
+    else if (status === 'Dang tra hang') return 'Đang trả hàng'
+    else if (status === 'Da tra hang') return 'Đã trả hàng'
 }
 
 export default statusWithCommas

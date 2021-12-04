@@ -46,6 +46,16 @@ const deliveryApi = {
     });
   },
 
+  getStandardShipBack: (staffId, token) => {
+    const url = `/deliveries/getstandardshipback/${staffId}`;
+    return axiosClient.get(url, {
+      headers: {
+        "Content-type": "Application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    });
+  },
+
   // updateStatus: (item, token) => {
   //   const url = '/deliveries/update';
   //   return axiosClient.post(url, item, {headers: {
