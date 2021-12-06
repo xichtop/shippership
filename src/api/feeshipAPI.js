@@ -4,7 +4,7 @@ const feeshipAPI = {
 
     getAllByStaff: (item, token) => {
         const url = `/feeship/getallbystaff`;
-        return axiosClient.get(url, item, {
+        return axiosClient.post(url, item, {
             headers: {
                 "Content-type": "Application/json",
                 "Authorization": `Bearer ${token}`
