@@ -40,6 +40,7 @@ export default function List({ navigation }) {
     const [colors, setColors] = useState([
         { type: 'solid', color: '#F9F7F7' },
         { type: 'outline', color: '#3F72AF' },
+        { type: 'outline', color: '#3F72AF' },
     ]);
 
     useEffect(() => {
@@ -69,6 +70,7 @@ export default function List({ navigation }) {
         setColors([
             { type: 'solid', color: '#F9F7F7' },
             { type: 'outline', color: '#3F72AF' },
+            { type: 'outline', color: '#3F72AF' },
         ])
     }
     const handleDeliver = () => {
@@ -83,6 +85,25 @@ export default function List({ navigation }) {
         }
         fetchListDeleiveries();
         setColors([
+            { type: 'outline', color: '#3F72AF' },
+            { type: 'solid', color: '#F9F7F7' },
+            { type: 'outline', color: '#3F72AF' },
+        ])
+    }
+
+    const handleBack = () => {
+        const fetchListDeleiveries = async () => {
+            try {
+                const deliveries = await coordinationAPI.getStandardShip(staffId, token, 'Back');
+                setData(deliveries);
+                setDataSearch(deliveries);
+            } catch (error) {
+                console.log("Failed to fetch provinces list: ", error);
+            }
+        }
+        fetchListDeleiveries();
+        setColors([
+            { type: 'outline', color: '#3F72AF' },
             { type: 'outline', color: '#3F72AF' },
             { type: 'solid', color: '#F9F7F7' },
         ])
@@ -110,6 +131,17 @@ export default function List({ navigation }) {
             const fetchListDeleiveries = async () => {
                 try {
                     const deliveries = await coordinationAPI.getStandardShip(staffId, token, 'Deliver');
+                    setData(deliveries);
+                    setDataSearch(deliveries);
+                } catch (error) {
+                    console.log("Failed to fetch provinces list: ", error);
+                }
+            }
+            fetchListDeleiveries();
+        } else {
+            const fetchListDeleiveries = async () => {
+                try {
+                    const deliveries = await coordinationAPI.getStandardShip(staffId, token, 'Back');
                     setData(deliveries);
                     setDataSearch(deliveries);
                 } catch (error) {
@@ -211,6 +243,50 @@ export default function List({ navigation }) {
         fetchUpdateItem();
     }
 
+    const hanldeReturned = (deliveryId) => {
+        const fetchUpdateItem = async () => {
+            var item = {
+                StaffId: staffId,
+                DeliveryId: deliveryId,
+                Status: 'Back'
+            }
+            var result = null;
+            try {
+                result = await coordinationAPI.updateStandardItem(item, token);
+
+            } catch (error) {
+                console.log("Failed to fetch update item: ", error);
+            }
+
+            if (result.successful === true) {
+                setTimeout(() => {
+                    showMessage({
+                        message: "Wonderfull!!!",
+                        description: "Xác nhận trả hàng thành công",
+                        type: "success",
+                        duration: 3000,
+                        icon: 'auto',
+                        floating: true,
+                    });
+                    onRefresh();
+                }, 2000);
+            } else {
+                setTimeout(() => {
+                    showMessage({
+                        message: "Xác nhận trả hàng thất bại",
+                        description: "Vui lòng thử lại sau",
+                        type: "danger",
+                        duration: 3000,
+                        icon: 'auto',
+                        floating: true,
+                    });
+                    onRefresh();
+                }, 2000);
+            }
+        }
+        fetchUpdateItem();
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="#6a51ae" />
@@ -221,7 +297,7 @@ export default function List({ navigation }) {
                     type={colors[0].type}
                     titleStyle={{ paddingLeft: 5, fontSize: 16, color: `${colors[0].color}` }}
                     onPress={handleOrdered}
-                    buttonStyle={{ width: 160 }}
+                    buttonStyle={{ width: 110 }}
                 />
                 <Button
                     icon={<Icon name="car-sport" size={15} color={colors[1].color} />}
@@ -229,7 +305,15 @@ export default function List({ navigation }) {
                     type={colors[1].type}
                     titleStyle={{ paddingLeft: 5, fontSize: 16, color: `${colors[1].color}` }}
                     onPress={handleDeliver}
-                    buttonStyle={{ width: 160 }}
+                    buttonStyle={{ width: 110 }}
+                />
+                <Button
+                    icon={<Icon name="play-back-circle" size={15} color={colors[2].color} />}
+                    title="Trả Hàng"
+                    type={colors[2].type}
+                    titleStyle={{ paddingLeft: 5, fontSize: 16, color: `${colors[2].color}` }}
+                    onPress={handleBack}
+                    buttonStyle={{ width: 110 }}
                 />
             </View>
             <SearchBar
@@ -317,7 +401,7 @@ export default function List({ navigation }) {
                                 :
                                 <View></View>
                             }
-                            {item.StatusDetail === 'Da roi kho' && colors[0].type !== 'solid' ?
+                            {item.StatusDetail === 'Da roi kho' && colors[1].type === 'solid' ?
                                 <View style={{ flexDirection: 'row', marginLeft: -15 }}>
                                     <Button title="Xác nhận đã giao hàng"
                                         onPress={() => hanldeDelivered(item.DeliveryId)}
@@ -330,6 +414,16 @@ export default function List({ navigation }) {
                                     <ModalReturn visible={modalVisiable} setVisible={setModalVisiable} deliveryId={item.DeliveryId} onRefresh={onRefresh} Type='Standard' />
 
                                 </View>
+                                :
+                                <View>
+                                </View>
+                            }
+
+                            {item.StatusDetail === 'Da roi kho' && colors[2].type === 'solid' ?
+                                <Button title="Xác nhận đã trả hàng"
+                                    onPress={() => hanldeReturned(item.DeliveryId)}
+                                    buttonStyle={{ backgroundColor: '#112D4E', borderRadius: 15, marginBottom: 10 }}
+                                />
                                 :
                                 <View>
                                 </View>

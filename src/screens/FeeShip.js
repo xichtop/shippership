@@ -17,9 +17,9 @@ const DATA = [
 
 export default function FeeShip() {
 
-    const StaffId = useSelector(state => state.staff.staff.StaffId);
+    const StaffId = useSelector(state => state.shipper.shipper.StaffId);
 
-    const token = useSelector(state => state.staff.token);
+    const token = useSelector(state => state.shipper.token);
 
     const [data, setData] = useState(DATA);
 

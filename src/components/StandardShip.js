@@ -115,6 +115,16 @@ export default function List({ navigation }) {
                 }
             }
             fetchListDeleiveries();
+        } else {
+            const fetchListDeleiveries = async () => {
+                try {
+                    const deliveries = await deliveryAPI.getStandardShipBack(staffId, token);
+                    setData(deliveries);
+                } catch (error) {
+                    console.log("Failed to fetch provinces list: ", error);
+                }
+            }
+            fetchListDeleiveries();
         }
         setTimeout(() => {
             setRefreshing(false);
