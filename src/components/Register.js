@@ -9,9 +9,6 @@ import * as yup from "yup";
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Input, Button } from 'react-native-elements';
 import RNPickerSelect from 'react-native-picker-select';
-import provinceAPI from '../api/provinceAPI';
-import districtAPI from '../api/districtAPI';
-import wardAPI from '../api/wardAPI';
 import storeAPI from '../api/storeAPI';
 import TakePhoto from './TakePhoto';
 import { useDispatch } from 'react-redux';
@@ -51,9 +48,6 @@ const schema = yup.object().shape({
     phone: yup.string().required('Số điện thoại không được để trống'),
     email: yup.string().required('Email không được để trống'),
     address: yup.string().required('Địa chỉ không được để trống'),
-    province: yup.string().required('Vui lòng chọn tỉnh'),
-    district: yup.string().required('Vui lòng chọn quận/huyện'),
-    ward: yup.string().required('Vui lòng chọn phường'),
 }).required();
 
 export default function Post({ navigation }) {
@@ -65,77 +59,7 @@ export default function Post({ navigation }) {
 
     const dispatch = useDispatch();
 
-    const [provinces, setProvinces] = useState([{ label: 'Tỉnh', value: 'tinh', key: 'tinh' }]);
-
-    const [districts, setDistricts] = useState([{ label: 'Huyện', value: 'huyen', key: 'huyen' }]);
-
-    const [wards, setWards] = useState([{ label: 'Xã', value: 'xa', key: 'xa' }]);
-
-    const [enableDistrict, setEnableDistrict] = useState('');
-
-    const [enableWard, setEnableWard] = useState('');
-
     const [img, setImg] = useState('https://us.123rf.com/450wm/dirkercken/dirkercken1403/dirkercken140300029/26322661-photos-bouton-image-et-la-photo-galerie-ic%C3%B4ne.jpg?ver=6');
-
-    useEffect(() => {
-        const fetchListProvinces = async () => {
-            try {
-                const temp = [];
-                const provincess = await provinceAPI.index();
-                provincess.forEach(province => {
-                    temp.push({
-                        label: province.ProvinceName,
-                        value: province.ProvinceCode,
-                        key: province.ProvinceCode,
-                    })
-                })
-                setProvinces(temp);
-            } catch (error) {
-                console.log("Failed to fetch provinces list: ", error);
-            }
-        }
-        fetchListProvinces();
-    }, [])
-
-    useEffect(() => {
-        const fetchListWards = async () => {
-            try {
-                const temp = [];
-                const wards = await wardAPI.getByDistrict(enableWard);
-                wards.forEach(ward => {
-                    temp.push({
-                        label: ward.WardName,
-                        value: ward.WardCode,
-                        key: ward.WardCode,
-                    })
-                })
-                setWards(temp);
-            } catch (error) {
-                console.log("Failed to fetch ward list: ", error);
-            }
-        }
-        fetchListWards();
-    }, [enableWard])
-
-    useEffect(() => {
-        const fetchListDistricts = async () => {
-            try {
-                const temp = [];
-                const districts = await districtAPI.getByProvice(enableDistrict);
-                districts.forEach(district => {
-                    temp.push({
-                        label: district.DistrictName,
-                        value: district.DistrictCode,
-                        key: district.DistrictCode,
-                    })
-                })
-                setDistricts(temp);
-            } catch (error) {
-                console.log("Failed to fetch district list: ", error);
-            }
-        }
-        fetchListDistricts();
-    }, [enableDistrict])
 
     const handleGetImg = (image) => {
         console.log(image);
@@ -164,9 +88,6 @@ export default function Post({ navigation }) {
                         Email: data.email,
                         StoreName: data.name,
                         Phone: data.phone,
-                        ProvinceCode: data.province,
-                        DistrictCode: data.district,
-                        WardCode: data.ward,
                         AddressDetail: data.address,
                         Picture: img,
                     }
@@ -183,7 +104,7 @@ export default function Post({ navigation }) {
         fetchStores();
     }
     return (
-        <View style={{ marginTop: 60 }}>
+        <View style={{ marginTop: 10 }}>
             <ScrollView>
                 <View style={styles.container}>
                     <Text style={styles.title}>Đăng Ký Tài Khoản</Text>
@@ -280,7 +201,7 @@ export default function Post({ navigation }) {
                                 <Input
                                     inputStyle={{ fontSize: 15 }}
                                     inputContainerStyle={styles.input}
-                                    placeholder='Nhập tên cửa hàng'
+                                    placeholder='Nhập tên nhân viên'
                                     leftIcon={
                                         <Icon
                                             name='information-circle'
@@ -305,7 +226,7 @@ export default function Post({ navigation }) {
                                 <Input
                                     inputStyle={{ fontSize: 15 }}
                                     inputContainerStyle={styles.input}
-                                    placeholder='Nhập số điện thoại cửa hàng'
+                                    placeholder='Nhập số điện thoại nhân viên'
                                     leftIcon={
                                         <Icon
                                             name='call'
@@ -331,7 +252,7 @@ export default function Post({ navigation }) {
                                 <Input
                                     inputStyle={{ fontSize: 15 }}
                                     inputContainerStyle={styles.input}
-                                    placeholder='Nhập email cửa hàng'
+                                    placeholder='Nhập email nhân viên'
                                     leftIcon={
                                         <Icon
                                             name='mail'
@@ -377,133 +298,7 @@ export default function Post({ navigation }) {
 
                     </View>
                     <View style={{ width: '95%', flexDirection: 'row' }}>
-                        <View style={{ flex: 1.5, paddingLeft: 10, }}>
-                            <Controller
-                                control={control}
-                                render={({ field: { onChange, onBlur, value } }) => (
-                                    <RNPickerSelect
-                                        placeholder={{ label: 'Chọn tỉnh', value: '' }}
-                                        onValueChange={(value) => {
-                                            onChange(value);
-                                            setEnableDistrict(value);
-                                        }}
-                                        value={value}
-                                        style={{
-                                            inputIOS: { ...styles.select },
-                                            iconContainer: {
-                                                top: 6,
-                                                right: 8,
-                                            },
-                                            viewContainer: {
-                                                flex: 1,
-                                                marginRight: 10,
-                                                marginBottom: 10
-                                            },
-                                            placeholder: {
-                                                color: 'gray',
-                                                fontSize: 15,
-                                            },
-                                        }}
-                                        items={provinces}
-                                        Icon={() => {
-                                            return (
-                                                <Icon
-                                                    name='caret-down'
-                                                    size={18}
-                                                    color='#3F72AF'
-                                                />
-                                            );
-                                        }}
-                                    />
-                                )}
-                                name="province"
-                                defaultValue=""
-                            />
-                            <Controller
-                                control={control}
-                                render={({ field: { onChange, onBlur, value } }) => (
-                                    <RNPickerSelect
-                                        placeholder={{ label: 'Chọn quận/huyện', value: '' }}
-                                        onValueChange={(value) => {
-                                            onChange(value);
-                                            setEnableWard(value);
-                                        }}
-                                        value={value}
-                                        disabled={enableDistrict === '' ? true : false}
-                                        style={{
-                                            inputIOS: { ...styles.select },
-                                            iconContainer: {
-                                                top: 6,
-                                                right: 8,
-                                            },
-                                            viewContainer: {
-                                                flex: 1,
-                                                marginRight: 10,
-                                                marginBottom: 10
-                                            },
-                                            placeholder: {
-                                                color: 'gray',
-                                                fontSize: 15,
-                                            },
-                                        }}
-                                        items={districts}
-                                        Icon={() => {
-                                            return (
-                                                <Icon
-                                                    name='caret-down'
-                                                    size={18}
-                                                    color='#3F72AF'
-                                                />
-                                            );
-                                        }}
-                                    />
-                                )}
-                                name="district"
-                                defaultValue=""
-                            />
-                            <Controller
-                                control={control}
-                                render={({ field: { onChange, onBlur, value } }) => (
-                                    <RNPickerSelect
-                                        placeholder={{ label: 'Chọn phường/xã', value: '' }}
-                                        onValueChange={onChange}
-                                        value={value}
-                                        disabled={enableWard === '' ? true : false}
-                                        style={{
-                                            inputIOS: { ...styles.select },
-                                            iconContainer: {
-                                                top: 6,
-                                                right: 8,
-                                            },
-                                            viewContainer: {
-                                                flex: 1,
-                                                marginRight: 10,
-                                            },
-                                            placeholder: {
-                                                color: 'gray',
-                                                fontSize: 15,
-                                            },
-                                        }}
-                                        items={wards}
-                                        Icon={() => {
-                                            return (
-                                                <Icon
-                                                    name='caret-down'
-                                                    size={18}
-                                                    color='#3F72AF'
-                                                />
-                                            );
-                                        }}
-                                    />
-                                )}
-                                name="ward"
-                                defaultValue=""
-                            />
-                            <View style={{ width: '100%', alignItems: 'flex-start', paddingTop: 6, }}>
-                                <Text style={{ color: 'red', fontSize: 12, }}>{errors.province ?.message || errors.district ?.message || errors.ward ?.message || ''}</Text>
-                            </View>
-                        </View>
-                        <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', borderLeftWidth: 1, borderLeftColor: '#3F72AF', paddingLeft: 5 }}>
+                        <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', paddingLeft: 5 }}>
                             <TakePhoto handleGetImg={handleGetImg} width={100} height={100} />
                         </View>
                     </View>
@@ -561,7 +356,7 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
     },
     input: {
-        height: 30,
+        height: 20,
     },
     select: {
         fontSize: 16,
