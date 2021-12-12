@@ -87,8 +87,7 @@ export default function FastMoney() {
                 })
             })
             const item = {
-                Deliveries: deliveries,
-                StaffId: staffId
+                Deliveries: deliveries
             }
             var result = null;
             try {
