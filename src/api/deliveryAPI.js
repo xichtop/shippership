@@ -56,16 +56,6 @@ const deliveryApi = {
     });
   },
 
-  // updateStatus: (item, token) => {
-  //   const url = '/deliveries/update';
-  //   return axiosClient.post(url, item, {headers: {
-  //     "Content-type": "Application/json",
-  //     "Authorization": `Bearer ${token}`
-  //     }   
-  // });
-  // },
-
-
 }
 
 export default deliveryApi;

@@ -77,7 +77,7 @@ export default function FeeShip() {
                 tempList.push([
                     item.DeliveryId,
                     item.Type,
-                    format(new Date(item.DeliveryDate), 'dd-MM-yyyy'),
+                    format(new Date(item.DeliveryDate.slice(0, 10)), 'dd-MM-yyyy'),
                     numberWithCommas(item.FeeShip),
                     item.Status
                 ])
@@ -88,6 +88,10 @@ export default function FeeShip() {
                     tempTotal += parseInt(item.FeeShip);
                 }
             })
+            tempList.sort(function (a, b) {
+                return parseInt(b[0]) - parseInt(a[0]);
+            }
+            );
             setData(tempList);
             setDataSearch(tempList);
             setTotalPay(tempTotalPay);
@@ -111,41 +115,41 @@ export default function FeeShip() {
         <View>
             <Text style={{ fontSize: 18, color: '#112D4E', fontWeight: 'bold', paddingVertical: 10, alignSelf: 'center' }}>Thống Kê Phí Giao Hàng</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 10, justifyContent: 'center', paddingBottom: 10 }} >
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                        <Button title='Từ Ngày'
-                            onPress={() => setShowFirst(true)}
-                            titleStyle={{ fontSize: 10 }}
-                            buttonStyle={{ width: 70, borderRadius: 3 }}
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                    <Button title='Từ Ngày'
+                        onPress={() => setShowFirst(true)}
+                        titleStyle={{ fontSize: 10 }}
+                        buttonStyle={{ width: 70, borderRadius: 3 }}
+                    />
+                    <Text style={{ fontSize: 12 }}> : {format(new Date(firstDate), 'dd-MM-yyyy')}</Text>
+                    {showFirst && (
+                        <DateTimePicker
+                            testID="dateTimePicker1"
+                            value={firstDate}
+                            mode='date'
+                            onChange={onFirstDateChange}
+                            locale='vi-VN'
                         />
-                        <Text style = {{fontSize: 12}}> : {format(new Date(firstDate), 'dd-MM-yyyy')}</Text>
-                        {showFirst && (
-                            <DateTimePicker
-                                testID="dateTimePicker1"
-                                value={firstDate}
-                                mode='date'
-                                onChange={onFirstDateChange}
-                                locale='vi-VN'
-                            />
-                        )}
-                    </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10 }}>
-                        <Button title='Đến ngày'
-                            onPress={() => setShowLast(true)}
-                            titleStyle={{ fontSize: 10 }}
-                            buttonStyle={{ width: 70, borderRadius: 3 }}
+                    )}
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10 }}>
+                    <Button title='Đến ngày'
+                        onPress={() => setShowLast(true)}
+                        titleStyle={{ fontSize: 10 }}
+                        buttonStyle={{ width: 70, borderRadius: 3 }}
+                    />
+                    <Text style={{ fontSize: 12 }}> : {format(new Date(lastDate), 'dd-MM-yyyy')}</Text>
+                    {showLast && (
+                        <DateTimePicker
+                            testID="dateTimePicker2"
+                            value={lastDate}
+                            mode='date'
+                            onChange={onLastDateChange}
+                            locale='vi-VN'
                         />
-                        <Text style = {{fontSize: 12}}> : {format(new Date(lastDate), 'dd-MM-yyyy')}</Text>
-                        {showLast && (
-                            <DateTimePicker
-                                testID="dateTimePicker2"
-                                value={lastDate}
-                                mode='date'
-                                onChange={onLastDateChange}
-                                locale='vi-VN'
-                            />
-                        )}
+                    )}
 
-                    </View>
+                </View>
                 <Button title='Lọc'
                     onPress={hanldeFilter}
                     titleStyle={{ fontSize: 12 }}
@@ -188,7 +192,7 @@ export default function FeeShip() {
             </View>
             <View style={styles.money}>
                 <Text style={styles.textmoney}>Tổng tiền: {numberWithCommas(total)} đ</Text>
-                <Text style={styles.textmoney}>Đã thanh toán: {numberWithCommas(totalPay)} đ</Text>
+                <Text style={styles.textmoney}>Đã nhận: {numberWithCommas(totalPay)} đ</Text>
                 <Text style={styles.textmoney}>Còn lại: {numberWithCommas(total - totalPay)} đ</Text>
             </View>
         </View>

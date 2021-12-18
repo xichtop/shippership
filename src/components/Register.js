@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
     Text, View, StyleSheet,
-    ScrollView, Alert, SafeAreaView
+    ScrollView, Alert
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Input, Button } from 'react-native-elements';
-import RNPickerSelect from 'react-native-picker-select';
-import storeAPI from '../api/storeAPI';
+import shipperAPI from '../api/shipperAPI';
 import TakePhoto from './TakePhoto';
 import { useDispatch } from 'react-redux';
 import { create } from '../slice/registerSlice';
@@ -70,9 +69,8 @@ export default function Post({ navigation }) {
 
         const fetchStores = async () => {
             try {
-                const accounts = await storeAPI.check(data.username);
+                const accounts = await shipperAPI.check(data.username);
                 if (accounts.length > 0) {
-                    // Alert.alert('Tên đăng nhập đã tồn tại');
                     setError("username", {
                         type: "manual",
                         message: "Tên đăng nhập đã tồn tại!",
@@ -82,17 +80,17 @@ export default function Post({ navigation }) {
                     Alert.alert('Vui lòng tải ảnh lên');
                 }
                 else {
-                    const store = {
+                    const shipper = {
                         Username: data.username,
                         Password: data.password,
                         Email: data.email,
-                        StoreName: data.name,
+                        FullName: data.name,
                         Phone: data.phone,
                         AddressDetail: data.address,
                         Picture: img,
                     }
                     const action = create({
-                        store
+                        shipper
                     })
                     dispatch(action);
                     navigation.navigate('Bank')
@@ -117,7 +115,7 @@ export default function Post({ navigation }) {
                         />
                     </View>
                     <View style={{ width: '100%', alignItems: 'flex-start', paddingLeft: 20, marginVertical: 10 }}>
-                        <Text style={{ fontSize: 15, color: '#112D4E' }}>Thông tin cửa hàng</Text>
+                        <Text style={{ fontSize: 15, color: '#112D4E' }}>Thông tin nhân viên</Text>
                     </View>
                     <View style={styles.controller}>
                         <Controller
@@ -315,7 +313,6 @@ export default function Post({ navigation }) {
                             {
                                 flexDirection: 'row',
                                 alignItems: 'center',
-                                paddingTop: 15
                             }
                         }
                     >
@@ -356,7 +353,7 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
     },
     input: {
-        height: 20,
+        height: 18,
     },
     select: {
         fontSize: 16,
@@ -375,6 +372,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         width: 150,
         height: 40,
-        marginTop: 30,
+        marginTop: 15,
     }
 });

@@ -224,16 +224,17 @@ export default function FastShipList({ navigation }) {
                             </View>
                             <View style={{ paddingVertical: 10, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <Text style={{ color: 'gray', fontSize: 16 }}>Thu hộ COD</Text>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Text style={{ fontSize: 16, color: '#112D4E', fontWeight: 'bold', paddingRight: 10 }}>{numberWithCommas(parseInt(item.COD))} đ</Text>
-                                    <TouchableOpacity
-                                        onPress={() => navigation.navigate('Detail', {
-                                            deliveryId: item.DeliveryId
-                                        })}
-                                    >
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate('Detail', {
+                                        deliveryId: item.DeliveryId
+                                    })}
+                                >
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Text style={{ fontSize: 16, color: '#112D4E', fontWeight: 'bold', paddingRight: 10 }}>{numberWithCommas(parseInt(item.COD))} đ</Text>
+
                                         <Icon name="chevron-forward" size={20} color='#112D4E' />
-                                    </TouchableOpacity>
-                                </View>
+                                    </View>
+                                </TouchableOpacity>
                             </View>
                             {item.Status === 'Delivering' ?
                                 <View style={{ flexDirection: 'row', marginLeft: -5 }}>
@@ -277,7 +278,7 @@ export default function FastShipList({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        height: '86%',
+        height: '82%',
         justifyContent: 'center',
         backgroundColor: '#E8EAE6',
     },

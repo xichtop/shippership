@@ -56,8 +56,8 @@ export default function FastMoney() {
             list.forEach(item => {
                 tempList.push([
                     item.DeliveryId,
-                    format(new Date(item.OrderDate), 'dd-MM-yyyy'),
-                    format(new Date(item.DeliveryDate), 'dd-MM-yyyy'),
+                    format(new Date(item.OrderDate.slice(0, 10)), 'dd-MM-yyyy'),
+                    format(new Date(item.DeliveryDate.slice(0, 10)), 'dd-MM-yyyy'),
                     numberWithCommas(item.COD),
                     item.Status
                 ])

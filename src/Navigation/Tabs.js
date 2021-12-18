@@ -180,7 +180,7 @@ const Tabs = ({navigation}) => {
                 },
             })}
         >
-            <Tab.Screen name='Index' component={NewListScreen} options={{ tabBarLabel: 'Đơn Hàng Mới', headerShown: false }} />
+            <Tab.Screen name='Index' component={NewListScreen} options={{ tabBarLabel: 'Đơn Mới', headerShown: false }} />
             <Tab.Screen name='List' component={ListScreen} options={{ tabBarLabel: 'Đơn Giao', headerShown: false }} />
             <Tab.Screen name='Area' component={AreaScreen} options={{ tabBarLabel: 'Khu Vực', headerShown: false }} />
             <Tab.Screen name='Fee' component={FeeShip} options={{ tabBarLabel: 'Phí GH', title: 'Phí Giao Hàng' }} />
